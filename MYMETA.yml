@@ -18,7 +18,24 @@ no_index:
     - inc
     - t
     - xt
-requires: {}
+requires:
+  Any::Moose: 0
+  AnyEvent::Twitter::Stream: 0
+  Config::Pit: 0
+  File::Spec: 0
+  File::Temp: 0
+  FindBin: 0
+  FindBin::libs: 0
+  Furl: 0
+  Getopt::Long: 0
+  POSIX: 0
+  Regexp::Assemble: 0
+  Regexp::Common: 0
+  Time::Piece: 0
+  URI: 0
+  XML::FeedPP: 0
+  YAML: 0
+  namespace::autoclean: 0
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/TrainingCamp2012/p5-OreOre-Readtwit.git
