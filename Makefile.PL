@@ -32,8 +32,6 @@ requires 'File::Temp';
 requires 'FindBin::libs';
 requires 'FindBin';
 requires 'Furl';
-requires 'Getopt::Long';
-requires 'POSIX';
 requires 'Regexp::Assemble';
 requires 'Regexp::Common';
 requires 'Time::Piece';
@@ -44,10 +42,20 @@ requires 'namespace::autoclean';
 
 test_requires 'Test::More' => '0.88';
 test_requires 'Test::Requires' => '0.06';
+test_requires 'Plack' => '0.99';
+test_requires 'Hook::LexWrap';
+test_requires 'Test::TCP';
+test_requires 'Plack::Handler::Twiggy';
+test_requires 'File::Temp';
+test_requires 'JSON';
+
 
 auto_set_repository;
 
 tests 't/*.t';
-author_tests 'xt';
+#author_tests 'xt';
 auto_include;
+auto_install;
+
+install_script('readtwit');
 WriteAll;
