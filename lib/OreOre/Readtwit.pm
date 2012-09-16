@@ -99,6 +99,7 @@ sub feedgen {
     }
 
     if ($feed->get_item()) {
+        -d $self->conf->{dir} || mkdir $self->conf->{dir};
         (undef, my $filename) = File::Temp::tempfile(
             "twitterXXXXX",
             DIR    => $self->conf->{dir},
