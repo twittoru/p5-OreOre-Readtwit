@@ -5,7 +5,7 @@ use JSON;
 use YAML;
 use Test::More;
 use Test::TCP;
-use Test::Requires qw(Plack::Builder Plack::Handler::Twiggy Try::Tiny);
+use Test::Requires qw(Plack::Handler::Twiggy Plack::Builder Try::Tiny);
 use Test::Requires { 'Plack::Request' => '0.99' };
 use Hook::LexWrap;
 use FindBin;
@@ -25,36 +25,33 @@ foreach my $enable_chunked (0, 1) {
             local $AnyEvent::Twitter::Stream::US_PROTOCOL       = "http";
             local $AnyEvent::Twitter::Stream::PROTOCOL          = 'http'; # real world API uses https
 
-            my $item = {
-                method => 'userstream',
-                option => {},
-            };
-            my $destroyed;
-            my $received = 0;
-            my $count_max = 5;
-            my ($deleted, $event) = (0, 0);
-
-            note("try $item->{method}");
-
             my @filenames;
             wrap 'File::Temp::tempfile',
                 post => sub {
-                    push @filenames,$_[-1]->[1];
+                  push @filenames,$_[-1]->[1];
             };
             my $readtwit = OreOre::Readtwit->new(
                 config => "$FindBin::Bin/config.yml",
             );
+            isa_ok($readtwit,"OreOre::Readtwit");
 
-            ok( $readtwit->run(),"readtwit run");
+            ok( $readtwit->run(),"readtwit can run");
             my $reference_file = "$FindBin::Bin/sample.rss";
-            ok( compare($filenames[0],$reference_file) == 0);
+            if(-f $filenames[0]){
+              ok( compare($filenames[0],$reference_file) == 0, "same JSON, same RSS");
 
-            my $output = XML::FeedPP::RSS->new($filenames[0]);
-            ok( $output->link, "http://instagr.am/p/MuW67/", "expanded url");
 
-            $reference->
-            note("delete temp files");
-            unlink $_ for @filenames;
+              my $output = XML::FeedPP::RSS->new($filenames[0]);
+              my @items = $output->match_item(link => "http://instagr.am/p/MuW67/");
+              if(scalar @items == 1) {
+                ok(@items, "output single item, has a correct link");
+              } else {
+                fail("output a feed include more items then input.");
+              }
+
+              note("delete temp files");
+              unlink $_ for @filenames;
+            }
 
 
         },
